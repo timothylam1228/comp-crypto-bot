@@ -12,13 +12,11 @@ from telegram.utils import helpers
 from telegram.utils.helpers import escape_markdown
 import datetime
 import os
-import psycopg2
 import json
 from uuid import uuid4
 import csv
 import cv2
 from botocore.config import Config
-import requests
 from io import BytesIO
 
 
@@ -90,83 +88,6 @@ def gpa_day(update, context):
 def help_command(update, context):
     x = update.message.from_user.id
     update.message.reply_text(x,)
-
-
-def dllmcount(update, context):
-    message = (update.message.text).lower()
-    increaseTemp = 0
-    if(update.message.reply_to_message.from_user.id is not None):
-        target = update.message.reply_to_message.from_user.id
-    count = 0
-    if "dllm"  in message:
-        DATABASE_URL = os.environ['DATABASE_URL']
-        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-        dbCursor = conn.cursor()
-        x = update.message.from_user.id
-        sqlSelect = "select * from tg_user where user_id = {}".format(x)
-        dbCursor.execute(sqlSelect)
-        rows = dbCursor.fetchall()
-        for row in rows:
-           count = row[1]
-        if (count == 0):
-            sqlInsertTable  = "INSERT INTO tg_user values({},1,NOW()::TIMESTAMP(0))".format(x)
-            print(sqlInsertTable)
-        else:
-            count = count + 1
-            sqlInsertTable  = "UPDATE tg_user SET count = {},last_update=Now()::TIMESTAMP(0) WHERE user_id = {}".format(count,x)
-        print(sqlInsertTable)
-        dbCursor.execute(sqlInsertTable)
-        if target is not None:
-            sqlUpdate = "select * from tg_user where user_id = {}".format(target)
-            dbCursor.execute(sqlUpdate)
-            rows = dbCursor.fetchall()
-            for row in rows:
-                id = row[0]
-                count = row[3]
-            if (id is None):
-                sqlInsertTable  = "INSERT INTO tg_user values({},0,NOW()::TIMESTAMP(0),1)".format(x)
-            # elif(count == 0):
-            #     sqlInsertTable  = "UPDATE tg_user SET count = {},last_update=Now()::TIMESTAMP(0),givediu = 0  WHERE user_id = {}".format(row[1],target)
-            else:
-                count = count + 1
-                sqlInsertTable  = "UPDATE tg_user SET count = {},last_update=Now()::TIMESTAMP(0),givediu2 ={} WHERE user_id = {}".format(row[1],count,target)
-            print(sqlInsertTable)  
-            dbCursor.execute(sqlInsertTable)
-        conn.commit()
-        dbCursor.close()
-        conn.close()
-
-def show(update,context):
-    count = 0
-    time = ""
-    DATABASE_URL = os.environ['DATABASE_URL']
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    dbCursor = conn.cursor()
-    x = update.message.from_user.id
-    sqlSelect = "select * from tg_user where user_id = {}".format(x)
-    dbCursor.execute(sqlSelect)
-    rows = dbCursor.fetchall()
-    for row in rows:
-        count = row[1]
-        time = row[2]
-       
-    sqlSelect = "select * from tg_user where user_id = {}".format(x)
-    dbCursor.execute(sqlSelect)
-    rows = dbCursor.fetchall()
-    for row in rows:
-        target = row[3]
-    if(count == 0):
-        text1 ='你仲未講過DLLM WO'
-    else:
-        text1 = 'You spoke '+str(count)+' times dllm. \nLast time you speak is '+str(time)
-        #update.message.reply_text(text = 'You spoke '+str(count)+' times dllm. \nLast time you speak is '+str(time))
-    if(target == 0):
-        text2 = '你仲未比人屌過WO'
-        #update.message.reply_text(text = '你仲未比人屌過WO')
-    else:
-        text2 = 'You 比人屌左'+ str(target)+'次'
-        #@update.message.reply_text(text = 'You 比人屌左'+ str(target)+'次')
-    update.message.reply_text(text ="Broked no want fix ")
 
 
 
