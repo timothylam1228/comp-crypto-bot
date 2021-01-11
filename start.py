@@ -17,28 +17,13 @@ import json
 from uuid import uuid4
 import csv
 import cv2
-import numpy as np
 from botocore.config import Config
 import requests
 from io import BytesIO
-import tempfile
-from PIL import Image
-import matplotlib.pyplot as plt
 
-import matplotlib.image as mpimg
 
 PORT = int(os.environ.get('PORT', 5000))
 SO_COOL = 'hkcc-it'
-FIRST, SECOND = range(2)
-s3 =boto3.resource('s3',
- aws_access_key_id='AKIAUVVDLOIF5VTRKBQH',
-    aws_secret_access_key="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")
-bucket = s3.Bucket('telegram.bot.web')
-client = boto3.client(
-    's3',
-    aws_access_key_id='AKIAUVVDLOIF5VTRKBQH',
-    aws_secret_access_key="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"
-)
 
 
 # Enable logging
@@ -235,122 +220,6 @@ def show(update,context):
         text2 = 'You 比人屌左'+ str(target)+'次'
         #@update.message.reply_text(text = 'You 比人屌左'+ str(target)+'次')
     update.message.reply_text(text ="Broked no want fix ")
-    
-
-def listCanteen(update,context):
-    chat_id=update.message.chat.id
-    DATABASE_URL = os.environ['DATABASE_URL']
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    dbCursor = conn.cursor()
-    sqlSelect = "select * from canteen"
-    dbCursor.execute(sqlSelect)
-    rows = dbCursor.fetchall()
-    menu_keyboard = []
-    menu_keyboard2 = []
-    latitude=""
-    longitude=""
-    name=""
-    i = 0
-    for row in rows:
-        i=i+1
-        latitude = row[1]
-        longitude = row[2]
-        name = row[3]
-        menu_keyboard.append([str(name)])
-        if(i%2==0):
-            menu_keyboard2.append(menu_keyboard)
-
-    menu_markup = ReplyKeyboardMarkup(menu_keyboard, one_time_keyboard=True, resize_keyboard=True)
-    update.message.reply_text(text = 'what canteen?',reply_markup=menu_markup)
-    conn.commit()
-    dbCursor.close()
-    conn.close()
-
-
-def showlocation(update,context):
-    chat_id=update.message.chat.id
-    DATABASE_URL = os.environ['DATABASE_URL']
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    dbCursor = conn.cursor()
-    sqlSelect = "select * from canteen where name = '{}'".format(update.message.text);
-    dbCursor.execute(sqlSelect)
-    rows = dbCursor.fetchall()
-    latitude=""
-    longitude=""
-    name=""
-    for row in rows:
-        latitude = row[1]
-        longitude = row[2]
-        name = row[3]
-    if(name != ""):
-        print(name)
-        context.bot.sendLocation(chat_id= chat_id, latitude=latitude, longitude=longitude,reply_markup = ReplyKeyboardRemove())
-
-
-
-def addcanteen(update, context):
-    chat_id=update.message.chat.id
-    DATABASE_URL = os.environ['DATABASE_URL']
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    dbCursor = conn.cursor()
-    print(context.args[0])
-    try:
-        name = context.args[0]
-        latitude = context.args[1]
-        longitude = context.args[2]
-        print(name)
-        print(latitude)
-        print(longitude)
-    except:
-        print("Error")
-
-    sqlInsertTable  = "INSERT INTO canteen (lat,long,name) values ({},{},'{}')".format(latitude,longitude,name);
-    print(sqlInsertTable)
-    dbCursor.execute(sqlInsertTable)
-    conn.commit()
-    dbCursor.close()
-    conn.close()
-
-def pin9(update,context):
-    chat_id=update.message.chat.id
-    f = open("pin.txt", "r")
-    temp = f.read()
-    update.message.reply_text(text='INFO'+temp)
-
-def exam(update,context):
-    found = 0
-    chat_id=update.message.chat.id
-    text = ''
-    text_old = ''
-    file = open('Exam_timetable.csv', 'r')
-    id = context.args[0]
-    if 'ccn' in id.lower():
-        text_old = '走啦死老野'
-    for row in csv.reader(file):
-        if row[1] == id and found == 1:
-            text = text + '\nGroup ' + str(row[3]+' 既考試時間係 '+row[5])
-        if row[1] == id and found == 0:
-            text= text + str(row[2]+'\n既考試喺係*'+row[4]+'*\nGroup '+row[3]+' 既考試時間係'+row[5])
-            found = 1
-    if found == 0:
-        context.bot.sendMessage(chat_id=chat_id,text = '冇呢一科牙 ' + text_old)
-    else:
-        context.bot.sendMessage(chat_id=chat_id,text =text, parse_mode= 'Markdown')
-
-def username(update, context):
-    username = context.args[0]
-    chat_id=update.message.chat.id
-    context.bot.sendMessage(chat_id=chat_id,text =username)
-
-def important_date(update, context):
-    chat_id=update.message.chat.id
-    f = open('date.json',)
-    data = json.load(f) 
-    print(data)
-    tmptext=''
-    for i in data['ImportantDate']:
-        tmptext = tmptext+i['date']+'\n'+i['descrition']+'\n\n'
-    context.bot.sendMessage(chat_id=chat_id,text =tmptext)
 
 
 
@@ -394,7 +263,7 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=TOKEN)
-    updater.bot.setWebhook('https://serene-depths-59599.herokuapp.com/' + TOKEN)
+    updater.bot.setWebhook('https://comp-crypto-bot.herokuapp.com/' + TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
@@ -408,11 +277,5 @@ if __name__ == '__main__':
 
 
 '''
-openbot - open the bot
-openday - remaining time b4 hell
-endday - remaining time to leave hell
-gpaday - most excited day
-showdllmtimes - count on dllm
-pin9 - show pin message
-exam - exam {code} show exam date time
+
 '''
