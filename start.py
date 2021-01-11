@@ -15,7 +15,6 @@ import os
 import json
 from uuid import uuid4
 import csv
-import cv2
 from botocore.config import Config
 from io import BytesIO
 
