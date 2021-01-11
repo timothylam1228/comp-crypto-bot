@@ -19,7 +19,7 @@ from botocore.config import Config
 from io import BytesIO
 import requests
 
-PORT = int(os.environ.get('PORT', 5000))
+#PORT = int(os.environ.get('PORT', 5000))
 SO_COOL = 'hkcc-it'
 
 
@@ -44,6 +44,7 @@ def p(update, context):
 
 def main():
     global update_id
+    #TOKEN='1588067244:AAGS6SjeUl9yw416K_dH-306392YyKCJepE'
     TOKEN = os.environ['TOKEN']
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
@@ -52,7 +53,7 @@ def main():
 
     # Start the Bot
     updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
+                          port=int('5000'),
                           url_path=TOKEN)
     updater.bot.setWebhook('https://comp-crypto-bot.herokuapp.com/' + TOKEN)
 
