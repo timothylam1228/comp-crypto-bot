@@ -17,7 +17,7 @@ from uuid import uuid4
 import csv
 from botocore.config import Config
 from io import BytesIO
-import requests
+#import requests
 
 #PORT = int(os.environ.get('PORT', 5000))
 SO_COOL = 'hkcc-it'
