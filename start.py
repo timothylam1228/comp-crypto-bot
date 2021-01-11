@@ -98,31 +98,7 @@ def main():
     dp = updater.dispatcher
 
     #In source.py
-    dp.add_handler(CommandHandler("Source", source,filters=~Filters.group))
     dp.add_handler(CommandHandler("start", start,filters=~Filters.group))
-    dp.add_handler(CommandHandler("openbot", open_bot,filters=Filters.group))
-    dp.add_handler(CommandHandler("openday",open_day))
-    dp.add_handler(CommandHandler("endday",end_day))
-    dp.add_handler(CommandHandler("gpaday",gpa_day))
-    dp.add_handler(CommandHandler("date",important_date))
-    #updater.dispatcher.add_handler(CallbackQueryHandler(button))
-    dp.add_handler(CommandHandler("Source", source,filters=~Filters.group))
-    dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, newmember))
-    # dp.add_handler(CommandHandler("lecturer",lecturer,filters=~Filters.group))
-    #updater.dispatcher.add_handler(CallbackQueryHandler(rating))
-
-    ############
-    dp.add_handler(CommandHandler("help",help_command))
-    dp.add_handler(CommandHandler("addcanteen",addcanteen,pass_args = True))
-    dp.add_handler(CommandHandler("username",username,pass_args = True))
-
-    #dp.add_handler(CommandHandler("showdllmtimes",show))
-    dp.add_handler(CommandHandler("canteen",listCanteen,filters=~Filters.group))
-    dp.add_handler(CommandHandler("pin9",pin9,filters=Filters.group))
-    dp.add_handler(CommandHandler("exam",exam,pass_args = True))
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.group, showlocation))
-    updater.dispatcher.add_handler(CallbackQueryHandler(button))
-    dp.add_handler(MessageHandler(Filters.text & Filters.group, dllmcount))
 
     #dp.add_handler(CommandHandler("donateToMe",donateToMe,pass_args = True))
 
